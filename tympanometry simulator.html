@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tympanometry Simulator - Audiology Educational Resource</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        .simulator-section {
+            margin-top: 2rem;
+        }
+        
+        .simulator-controls {
+            margin: 20px 0;
+        }
+        
+        .tymp-selector {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .info-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .measurements {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .canvas-container {
+            max-width: 100%;
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        canvas {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .simulator-intro {
+            margin-bottom: 2rem;
+        }
+
+        /* Practice mode styles */
+        .mode-button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .mode-button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .practice-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .practice-button {
+            background-color: var(--background-color);
+            border: 1px solid var(--secondary-color);
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .practice-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .correct {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .incorrect {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .stats {
+            margin: 15px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .next-button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .next-button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .mode-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <h1>Audiology Education</h1>
+            <ul>
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="test-battery.html">Test Battery</a></li>
+                <li><a href="test-results.html">Test Results</a></li>
+                <li><a href="management.html">Management</a></li>
+                <li><a href="tympanometry simulator.html">Tympanometry</a></li>
+                <li><a href="audiometry.html">Audiometry</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="content">
+            <h2>Tympanometry Simulator</h2>
+            
+            <div class="simulator-intro">
+                <p>This interactive simulator allows you to explore different types of tympanograms and understand their clinical significance. Select different tympanogram types to see how the curve changes and learn about what each pattern indicates.</p>
+            </div>
+
+            <div class="simulator-section">
+                <div id="simulator-controls" class="simulator-controls">
+                    <div class="mode-selection">
+                        <label for="tympType">Select Tympanogram Type:</label>
+                        <select id="tympType" class="tymp-selector">
+                            <option value="typeA">Type A (Normal)</option>
+                            <option value="typeAs">Type As (Shallow)</option>
+                            <option value="typeAd">Type Ad (Deep)</option>
+                            <option value="typeB">Type B (Flat)</option>
+                            <option value="typeC">Type C (Negative Peak)</option>
+                        </select>
+                        <button onclick="TympanometrySimulator.startPracticeMode()" class="mode-button">
+                            Start Practice Mode
+                        </button>
+                    </div>
+                </div>
+
+                <div id="infoCard" class="info-card"></div>
+                <div class="canvas-container">
+                    <canvas id="tympCanvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Audiology Education Resource. An Open Educational Resource.</p>
+    </footer>
+
+    <script src="tympanometry simulator.js"></script>
+</body>
+</html>

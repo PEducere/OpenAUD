@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Tone Audiometry Simulator</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        .content h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .ear-selector {
+            display: flex;
+            gap: 1rem;
+            justify-self: start;
+        }
+
+        .header-title {
+            text-align: center;
+            margin: 0;
+        }
+
+        .new-patient {
+            justify-self: end;
+        }
+
+        .ear-button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--secondary-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .ear-button.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .audiogram-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: calc(100vh - 250px);
+        }
+
+        .audiogram {
+            flex: 1;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 400px;
+            max-height: 500px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    border-radius: 8px;
+    margin-top: -1rem;
+    max-width: calc(100% - 2rem);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.control-group {
+    padding: 1rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 200px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.value-display {
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 70px;
+    text-align: center;
+}
+
+.control-button {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    min-width: 40px;
+}
+
+.control-button:hover {
+    background: var(--accent-color);
+}
+
+.play-button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.response-bar {
+    width: 100%;
+    height: 30px;
+    background: #eee;
+    margin: 0.5rem 0;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.response-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--accent-color);
+    transition: width 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.response-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-weight: bold;
+}
+
+.save-threshold {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.save-threshold:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+    .controls {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0;
+        padding: 0;
+    }
+
+    .control-group {
+        max-width: 300px;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <h1>Audiology Education</h1>
+            <ul>
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="test-battery.html">Test Battery</a></li>
+                <li><a href="test-results.html">Test Results</a></li>
+                <li><a href="management.html">Management</a></li>
+                <li><a href="tympanometry simulator.html">Tympanometry</a></li>
+                <li><a href="audiometry.html">Audiometry</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="content">
+            <div class="header-container">
+                <div class="ear-selector">
+                    <button class="ear-button active" data-ear="right">Right Ear</button>
+                    <button class="ear-button" data-ear="left">Left Ear</button>
+                </div>
+                <h2 class="header-title">Pure Tone Audiometry Simulator</h2>
+                <button class="control-button new-patient" id="newPatient">New Patient</button>
+            </div>
+            
+            <div class="audiogram-container">
+                <div class="audiogram">
+                    <canvas id="audiogramCanvas"></canvas>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <h3>Frequency</h3>
+                        <div class="control-row">
+                            <button class="control-button" data-action="freq-down">−</button>
+                            <div class="value-display" id="freq-display">1000 Hz</div>
+                            <button class="control-button" data-action="freq-up">+</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3>Intensity</h3>
+                        <div class="control-row">
+                            <button class="control-button" data-action="db-down">−</button>
+                            <div class="value-display" id="db-display">40 dB</div>
+                            <button class="control-button" data-action="db-up">+</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <button class="control-button play-button" id="playTone">Play Tone</button>
+                        <div class="response-bar">
+                            <div class="response-indicator"></div>
+                            <div class="response-text">Not Heard</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <button class="save-threshold" id="saveThreshold">Save Threshold</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Audiology Education Resource. An Open Educational Resource.</p>
+    </footer>
+
+    <script src="audiometry.js"></script>
+</body>
+</html>
